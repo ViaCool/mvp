@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  @apply bg-neutral-200 font-open-sans text-md font-normal text-black-700;
+}
+a {
+  @apply hover:underline;
+}
+.option-popup::after {
+  @apply border-neutral-400 border block w-2.5 h-2.5 bg-white absolute top-[-5px] left-[175px] border-b-0 border-r-0 rotate-45 content-[""] z-0;
+}
