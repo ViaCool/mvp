@@ -1,5 +1,7 @@
 import axios from 'axios'
-import { API_URL, LOGIN } from './api_routes'
+
+import { API_URL, LOGIN, USER_ME } from './api_routes'
+import axiosInstance from './axiosInstance'
 
 export const loginApi = async ({ username, password }) => {
   try {
@@ -19,4 +21,15 @@ export const loginApi = async ({ username, password }) => {
     }
   }
 }
-export const logout = () => localStorage.removeItem('authToken')
+export const userApi = async () => {
+  try {
+    const res = await axiosInstance.get(USER_ME)
+    return res
+  } catch (err) {
+    return {
+      error: err
+    }
+  }
+}
+
+

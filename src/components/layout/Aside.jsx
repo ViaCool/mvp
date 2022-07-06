@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import deBlack from "../../images/data_exploration_black_24dp 1.svg";
 import seBlack from "../../images/settings_black_24dp 1.svg";
 import logo from "../../images/logo.svg";
-import { Navigate } from "react-router-dom";
+
 const pages = [
   {
     id: 234,

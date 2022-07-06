@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -16,4 +16,7 @@ a {
 }
 .option-popup::after {
   @apply border-neutral-400 border block w-2.5 h-2.5 bg-white absolute top-[-5px] left-[175px] border-b-0 border-r-0 rotate-45 content-[""] z-0;
+}
+.transition-250ms-all {
+  transition: all 250ms ease-in-out !important;
 }

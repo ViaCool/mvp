@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { API_URL } from './api_routes'
 
-export const axiosInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: API_URL,
   timeout: 90000,
   headers: {
@@ -23,3 +23,4 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+export default axiosInstance

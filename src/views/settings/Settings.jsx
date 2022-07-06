@@ -1,80 +1,131 @@
-import React, { useState } from 'react';
-import Button from '../../components/common/Button';
-import InlineTextField from '../../components/common/InlineTextField';
-import Table from '../../components/common/Table';
-import Appbar from '../../components/layout/Appbar';
-import Modal from '../../components/common/Modal';
-import na from '../../images/navigate_next (1).svg';
-import adCircle from '../../images/add_circle_black_24dp (1) 1.svg';
-import deBlack from '../../images/delete_black_24dp (1) 3.svg';
-import line10 from '../../images/Line 10.svg';
+import React, { useState } from "react";
+import Button from "../../components/common/Button";
+import InlineTextField from "../../components/common/InlineTextField";
+import Table from "../../components/common/Table";
+import Appbar from "../../components/layout/Appbar";
+import Modal from "../../components/common/Modal";
+import na from "../../images/navigate_next (1).svg";
+import adCircle from "../../images/add_circle_black_24dp (1) 1.svg";
+import deBlack from "../../images/delete_black_24dp (1) 3.svg";
+import line10 from "../../images/Line 10.svg";
+import { UserContext } from "../../context/UserContext";
 
 const table = {
-  cols: ['Name', 'Email', 'Role'],
+  cols: ["Name", "Email", "Role"],
   rows: [
-    ['John Doe', 'GeorgeFields@gmail.com', 'Owner'],
-    ['John Doe', 'GeorgeFields@gmail.com', 'Owner'],
-    ['John Doe', 'GeorgeFields@gmail.com', 'Owner'],
+    ["John Doe", "GeorgeFields@gmail.com", "Owner"],
+    ["John Doe", "GeorgeFields@gmail.com", "Owner"],
+    ["John Doe", "GeorgeFields@gmail.com", "Owner"],
   ],
 };
 
 function Settings() {
+  const { user } = React.useContext(UserContext);
+  const [isOpen, setIsOpen] = useState({
+    tab1: true,
+    tab2: true,
+    tab3: false,
+    tab4: false,
+    tab5: false,
+  });
   const [deleteUser, setDeleteUser] = useState(false);
   const toggleDeleteUser = () => setDeleteUser((v) => !v);
   const [deleteCompany, setDeleteCompany] = useState(false);
   const toggleDeleteCompany = () => setDeleteCompany((v) => !v);
-
+  // console.log(user?.organization_roles[0]?.organization)
+  const organization =
+    Object.keys(user).length > 0 && user?.organization_roles[0]?.organization;
   return (
     <>
       <Appbar title="Settings" />
       <div className="mb-20">
         <div className="mb-10">
           <div className="flex gap-3">
-            <img className="w-6 h-6" src={na} alt="" />
+            <img
+              className={`w-6 h-6 hover:cursor-pointer transition-250ms-all  ${
+                isOpen?.tab1 ? "" : "rotate-180"
+              }`}
+              src={na}
+              alt=""
+              onClick={() => setIsOpen({ ...isOpen, tab1: !isOpen?.tab1 })}
+            />
             <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow">
               Personal
             </h5>
           </div>
-          <div className="ml-9">
+          <div
+            className={`ml-9 transition-250ms-all  ${
+              isOpen?.tab1 ? "block" : "hidden"
+            }`}
+          >
             <div className="flex justify-between">
-              <InlineTextField label="Email" defaultValue="john.doe@email.com" />
-              <InlineTextField label="First Name:" defaultValue="john" />
-              <InlineTextField label="Last Name:" defaultValue="Doe" />
+              <InlineTextField label="Email" defaultValue={user?.email} />
+              <InlineTextField
+                label="First Name:"
+                defaultValue={user?.firstname}
+              />
+              <InlineTextField
+                label="Last Name:"
+                defaultValue={user?.lastname}
+              />
             </div>
           </div>
         </div>
         <div className="mb-10">
           <div className="flex gap-3">
-            <img className="w-6 h-6" src={na} alt="" />
+            <img
+              className={`w-6 h-6 hover:cursor-pointer  transition-250ms-all ${
+                isOpen?.tab2 ? "" : "rotate-180"
+              }`}
+              src={na}
+              alt=""
+              onClick={() => setIsOpen({ ...isOpen, tab2: !isOpen?.tab2 })}
+            />
             <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow">
               Company
             </h5>
           </div>
-          <div className="ml-9">
+          <div className={`ml-9 ${isOpen?.tab2 ? "block" : "hidden"}`}>
             <div className="flex justify-between">
-              <InlineTextField label="Name" defaultValue="ACME" />
-              <InlineTextField label="Contact Email:" defaultValue="acme@gmail.com" />
-              <InlineTextField label="Phone Number:" defaultValue="+791101101032" />
+              <InlineTextField label="Name" defaultValue={organization?.name} />
+              <InlineTextField
+                label="Contact Email:"
+                defaultValue={organization?.contact_email}
+              />
+              <InlineTextField
+                label="Phone Number:"
+                defaultValue={organization?.contact_phone}
+              />
             </div>
           </div>
         </div>
         <div className="mb-10">
           <div className="flex gap-3">
-            <img className="w-6 h-6" src={na} alt="" />
+            <img
+              className={`w-6 h-6 hover:cursor-pointer transition-250ms-all  ${
+                isOpen?.tab3 ? "" : "rotate-180"
+              }`}
+              src={na}
+              alt=""
+              onClick={() => setIsOpen({ ...isOpen, tab3: !isOpen?.tab3 })}
+            />
             <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow">
               Products
             </h5>
           </div>
-          <div className="ml-20">
+          <div className={`ml-20 ${isOpen?.tab3 ? "block" : "hidden"}`}>
             <ul className="list-none mt-6">
               {[
-                'Avocado Shelf-life Greencell',
-                'Avocado Shelf-life Mission',
-                'Grapes QA Flag',
-                'Grapes Waste %',
-                'Pepper Shelf-life Israel',
+                "Avocado Shelf-life Greencell",
+                "Avocado Shelf-life Mission",
+                "Grapes QA Flag",
+                "Grapes Waste %",
+                "Pepper Shelf-life Israel",
               ].map((_, i) => (
-                <li className="text-neutral-900 my-4 text-md tracking-[0.3px]" key={i}>
+                <li
+                  className="text-neutral-900 my-4 text-md tracking-[0.3px]"
+                  key={i}
+                >
                   {_}
                 </li>
               ))}
@@ -85,9 +136,18 @@ function Settings() {
 
       <div className="mb-10">
         <div className="mb-4 flex gap-3 ">
-          <img className="w-6 h-6" src={na} alt="" />
+          <img
+            className={`w-6 h-6 hover:cursor-pointer transition-250ms-all ${
+              isOpen?.tab4 ? "" : "rotate-180"
+            }`}
+            src={na}
+            alt=""
+            onClick={() => setIsOpen({ ...isOpen, tab4: !isOpen?.tab4 })}
+          />
           <div className="pb-2 flex justify-between flex-grow border-b border-neutral-400">
-            <h5 className="font-semibold text-dark text-h2 flex-grow">Personal</h5>
+            <h5 className="font-semibold text-dark text-h2 flex-grow">
+              Personal
+            </h5>
             <div className="flex gap-4 items-center">
               <button type="button" className="flex gap-1.5 items-center">
                 <img className="w-6 h-6" src={adCircle} alt="" />
@@ -101,26 +161,44 @@ function Settings() {
                 className="flex gap-1.5 items-center duration-150 hover:opacity-100 opacity-60 hover:contrast-100 contrast-0"
               >
                 <img className="w-6 h-6" src={deBlack} alt="" />
-                <span className="uppercase font-semibold text-xs text-primary-blue">DELETE</span>
+                <span className="uppercase font-semibold text-xs text-primary-blue">
+                  DELETE
+                </span>
               </button>
             </div>
           </div>
         </div>
-        <div className="ml-9">
+        <div className={`ml-9 ${isOpen?.tab4 ? "block" : "hidden"}`}>
           <Table selectable datam={table} />
         </div>
       </div>
 
       <div className="mb-10">
         <div className="flex gap-3">
-          <img className="w-6 h-6" src={na} alt="" />
+          <img
+            className={`w-6 h-6 transition-250ms-all hover:cursor-pointer  ${
+              isOpen?.tab5 ? "" : "rotate-180"
+            }`}
+            src={na}
+            alt=""
+            onClick={() => setIsOpen({ ...isOpen, tab5: !isOpen?.tab5 })}
+          />{" "}
           <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow">
             Danger Zone
           </h5>
         </div>
-        <div className="ml-9 mt-4">
+        <div
+          className={`ml-9 mt-4 transition-250ms-all ${
+            isOpen?.tab5 ? "block" : "hidden"
+          }`}
+        >
           <div className="flex gap-6">
-            <Button onClick={toggleDeleteUser} color="accent-red" text="Delete User" size="small" />
+            <Button
+              onClick={toggleDeleteUser}
+              color="accent-red"
+              text="Delete User"
+              size="small"
+            />
             <Button
               onClick={toggleDeleteCompany}
               color="accent-red"
@@ -132,10 +210,18 @@ function Settings() {
       </div>
 
       <Modal title="Delete User" close={toggleDeleteUser} open={deleteUser}>
-        <p>In order to delete user, please send email to support@via-cool.com</p>
+        <p>
+          In order to delete user, please send email to support@via-cool.com
+        </p>
       </Modal>
-      <Modal title="Delete Company" close={toggleDeleteCompany} open={deleteCompany}>
-        <p>In order to delete company, please send email to support@via-cool.com</p>
+      <Modal
+        title="Delete Company"
+        close={toggleDeleteCompany}
+        open={deleteCompany}
+      >
+        <p>
+          In order to delete company, please send email to support@via-cool.com
+        </p>
       </Modal>
     </>
   );
