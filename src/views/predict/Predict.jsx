@@ -1,11 +1,13 @@
-import React from 'react';
-import Button from '../../components/common/Button';
-import FileUplaod from '../../components/common/FileUplaod';
-import SelectField from '../../components/common/SelectField';
-import Table from '../../components/common/Table';
-import Appbar from '../../components/layout/Appbar';
-import deBlack from '../../images/delete_black_24dp (1) 3.svg';
-import gr from '../../images/Group 1191.svg';
+import React from "react";
+import Button from "../../components/common/Button";
+import FileUplaod from "../../components/common/FileUplaod";
+import SelectField from "../../components/common/SelectField";
+import Table from "../../components/common/Table";
+import Appbar from "../../components/layout/Appbar";
+import { FormatContext } from "../../context/FormatContext";
+import deBlack from "../../images/delete_black_24dp (1) 3.svg";
+import gr from "../../images/Group 1191.svg";
+import { formatsApi } from "../../apiServices/formatsApi";
 
 const TableAction = () => (
   <div className="flex gap-3 items-center">
@@ -25,22 +27,85 @@ const TableAction = () => (
 );
 
 const table = {
-  cols: ['Name', 'Uploaded', 'Produce', ''],
+  cols: ["Name", "Uploaded", "Produce", ""],
   rows: [
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
-    ['grapes-1213-prediction.xlsx', '30 Dec 2021, 11:12', 'Grapes', <TableAction />],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
+    [
+      "grapes-1213-prediction.xlsx",
+      "30 Dec 2021, 11:12",
+      "Grapes",
+      <TableAction />,
+    ],
   ],
 };
 
 function Predict() {
+  const { setFormatData, format } = React.useContext(FormatContext);
+
+  const InitData = async () => {
+    const res = await formatsApi();
+    if (res?.error) {
+      setFormatData(res?.data);
+      return;
+    }
+  };
+  React.useEffect(() => {
+    InitData();
+  }, [!format]);
+
   return (
     <>
       <div className="px-2 mb-6">

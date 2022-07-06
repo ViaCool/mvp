@@ -1,39 +1,39 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import deBlack from '../../images/data_exploration_black_24dp 1.svg';
-import seBlack from '../../images/settings_black_24dp 1.svg';
-import logo from '../../images/logo.svg';
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import deBlack from "../../images/data_exploration_black_24dp 1.svg";
+import seBlack from "../../images/settings_black_24dp 1.svg";
+import logo from "../../images/logo.svg";
 
 const pages = [
   {
     id: 234,
     icon: deBlack,
-    name: 'Predict',
-    url: '/predict',
+    name: "Predict",
+    url: "/predict",
   },
   {
     id: 481,
     icon: seBlack,
-    name: 'Settings',
-    url: '/settings',
+    name: "Settings",
+    url: "/settings",
   },
   {
     id: 6776,
     icon: deBlack,
-    name: 'Demo File Uploaded',
-    url: '/demo-uploaded',
+    name: "Demo File Uploaded",
+    url: "/demo-uploaded",
   },
   {
     id: 12334,
     icon: deBlack,
-    name: 'Demo Upload Progress',
-    url: '/demo-upload-progress',
+    name: "Demo Upload Progress",
+    url: "/demo-upload-progress",
   },
 ];
 
 function Aside() {
   const location = useLocation();
-
+  const navigate=useNavigate()
   return (
     <aside className="bg-white w-[220px] h-screen fixed left-0 top-0 bottom-0">
       <div className="p-6">
@@ -48,12 +48,12 @@ function Aside() {
             <Link
               to={url}
               className={`px-9 py-3 block hover:no-underline hover:bg-gressgreen duration-200 ${
-                url === location.pathname ? 'bg-gressgreen font-bold' : ''
+                url === location.pathname ? "bg-gressgreen font-bold" : ""
               }`}
             >
               <span
                 className={`flex gap-4 items-center duration-100 hover:opacity-100 ${
-                  url === location.pathname ? '' : 'opacity-50'
+                  url === location.pathname ? "" : "opacity-50"
                 }`}
               >
                 <img className="w-6 h-6" src={icon} alt="" />
@@ -62,6 +62,23 @@ function Aside() {
             </Link>
           </li>
         ))}
+        <li
+          className="px-9 py-3 block hover:no-underline hover:bg-gressgreen duration-200"
+          onClick={() => {
+            localStorage.clear()
+            navigate("/login")
+          }}
+        >
+          <span
+            className={`flex gap-4 ml-1 items-center opacity-50 duration-100 hover:opacity-100`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 ">
+              <path d="M17 7.908H8v4h9V14l4-4.043-4-4.043v1.994z" />
+              <path d="M13.919 6.908V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v15.908a2 2 0 0 0 2 2h9.919a2 2 0 0 0 2-2v-5h-6.87v-6z" />
+            </svg>
+            <span className="text-h3 tracking-normal ">Logout</span>
+          </span>
+        </li>
       </ul>
     </aside>
   );
