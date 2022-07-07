@@ -4,9 +4,6 @@ import { UserContext } from "../../context/UserContext";
 
 function Appbar({ title }) {
   const { user } = React.useContext(UserContext);
-
-  console.log({ user });
-
   return (
     <div className="flex justify-between mb-10">
       <h4 className="font-semibold text-h1 text-dark">{title}</h4>
