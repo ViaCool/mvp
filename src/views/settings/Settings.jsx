@@ -28,9 +28,9 @@ function Settings() {
   const [isOpen, setIsOpen] = useState({
     tab1: true,
     tab2: true,
-    tab3: false,
-    tab4: false,
-    tab5: false,
+    tab3: true,
+    tab4: true,
+    tab5: true,
   });
   const [deleteUser, setDeleteUser] = useState(false);
   const toggleDeleteUser = () => setDeleteUser((v) => !v);
@@ -125,7 +125,7 @@ function Settings() {
             <ul className="list-none mt-6">
               {produceTypes?.map((pTypes) =>
                 organization?.ml_models?.map((mlModel) =>
-                  pTypes?.value == mlModel?.produce_type_id ? (
+                  pTypes?.value === mlModel?.produce_type_id ? (
                     <li
                       className="text-neutral-900 my-4 text-md tracking-[0.3px]"
                       key={pTypes?.value}
