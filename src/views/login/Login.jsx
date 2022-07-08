@@ -6,12 +6,12 @@ import logo from "../../images/logo.svg";
 import { loginApi } from "../../apiServices/authApi";
 import { toast } from "react-toastify";
 
-
 function Login() {
   const navigate = useNavigate();
   const [authCredentials, setAuthCredentials] = React.useState({
     username: null,
     password: null,
+    loading: false,
   });
 
   const handleAuthSubmit = async () => {
@@ -32,9 +32,10 @@ function Login() {
       });
       return;
     }
-
+    setAuthCredentials({ ...authCredentials, loading: true });
     const response = await loginApi(authCredentials);
     if (response?.error) {
+      setAuthCredentials({ ...authCredentials, loading: false });
       toast.error("Incorrect email or password", {
         position: "bottom-right",
         autoClose: 5000,
@@ -98,12 +99,21 @@ function Login() {
             />
           </div>
           <div>
-            <Button
-              color="primary-blue"
-              text="Log In"
-              className="w-full"
-              onClick={handleAuthSubmit}
-            />
+            {authCredentials?.loading ? (
+              <Button
+                color="primary-blue"
+                text="Loading ..."
+                className="w-full"
+                onClick={handleAuthSubmit}
+              />
+            ) : (
+              <Button
+                color="primary-blue"
+                text="Log In"
+                className="w-full"
+                onClick={handleAuthSubmit}
+              />
+            )}
           </div>
         </div>
       </div>

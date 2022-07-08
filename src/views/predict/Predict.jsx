@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../../components/common/Button";
 import FileUplaod from "../../components/common/FileUplaod";
 import SelectField from "../../components/common/SelectField";
@@ -93,26 +93,39 @@ const table = {
 };
 
 function Predict() {
-  const { setFormatData, format } = React.useContext(FormatContext);
-
+  const {
+    setFormatData,
+    SetSelectedProduceType,
+    format,
+    setProduceTypes,
+    produceTypes,
+    selectedProduceTypeId,
+  } = React.useContext(FormatContext);
   const InitData = async () => {
     const res = await formatsApi();
-    if (res?.error) {
+    if (!res?.error) {
       setFormatData(res?.data);
+      res?.data &&
+        setProduceTypes(
+          Object?.keys(res?.data?.produce_types)?.map((d) => ({
+            value: res?.data?.produce_types[d],
+            name: d,
+          }))
+        );
+      SetSelectedProduceType(Object.values(res?.data?.produce_types)[0]);
       return;
     }
   };
   React.useEffect(() => {
     InitData();
   }, [!format]);
-
   return (
     <>
       <div className="px-2 mb-6">
         <Appbar title="Predict" />
         <div>
           <h6 className="font-semibold text-h4 text-dark mb-1.5">Produce</h6>
-          <SelectField />
+          <SelectField options={produceTypes} />
         </div>
       </div>
       <div className="flex mb-16 gap-16">

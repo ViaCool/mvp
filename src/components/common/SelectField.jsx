@@ -1,27 +1,16 @@
-import React from 'react';
-import { useState } from 'react';
-import naNext from '../../images/navigate_next.svg';
-
-const options = [
-  {
-    name: 'Grapes',
-    value: 'Grapes',
-  },
-  {
-    name: 'Avocado',
-    value: 'Avocado',
-  },
-  {
-    name: 'Pepper',
-    value: 'Pepper',
-  },
-];
+import React from "react";
+import { useState } from "react";
+import { FormatContext } from "../../context/FormatContext";
+import naNext from "../../images/navigate_next.svg";
 
 function SelectField() {
+  const { produceTypes, selectedProduceType, SetSelectedProduceType } =
+    React.useContext(FormatContext);
   const [open, setOpen] = useState(false);
   const toggleOpen = () => setOpen((v) => !v);
-  const [value, setValue] = useState(0);
-  const changeValue = (index) => setValue(index);
+  const changeValue = (id) => {
+    SetSelectedProduceType(id);
+  };
 
   return (
     <div className="relative max-w-max">
@@ -30,17 +19,17 @@ function SelectField() {
         onClick={toggleOpen}
       >
         <span className="flex-grow min-w-[160px] text-md text-neutral-900 px-1 block">
-          {options[value].name}
+          {selectedProduceType}
         </span>
         <img
-          className={`duration-150 w-6 h-6 ${open ? 'rotate-180' : ''}`}
+          className={`duration-150 w-6 h-6 ${open ? "rotate-180" : ""}`}
           src={naNext}
           alt=""
         />
       </div>
       {open && (
         <ul className="absolute min-w-full top-[50px] left-0 bg-white shadow-200 border-neutral-450 option-popup z-40">
-          {options.map(({ name, value }, i) => (
+          {produceTypes?.map(({ name, value }, i) => (
             <li
               key={i}
               onClick={() => {

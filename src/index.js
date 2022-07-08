@@ -5,12 +5,15 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import UserContextProvider from './context/UserContext'
 import FormatContextProvider from './context/FormatContext'
+import OrganizationContextProvider from './context/OrganizationContext'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <UserContextProvider>
       <FormatContextProvider>
-        <App />
+        <OrganizationContextProvider>
+          <App />
+        </OrganizationContextProvider>
       </FormatContextProvider>
     </UserContextProvider>
   </React.StrictMode>

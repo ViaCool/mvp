@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Button from "../../components/common/Button";
 import InlineTextField from "../../components/common/InlineTextField";
 import Table from "../../components/common/Table";
@@ -9,6 +9,8 @@ import adCircle from "../../images/add_circle_black_24dp (1) 1.svg";
 import deBlack from "../../images/delete_black_24dp (1) 3.svg";
 import line10 from "../../images/Line 10.svg";
 import { UserContext } from "../../context/UserContext";
+import { FormatContext } from "../../context/FormatContext";
+import { OrganizationContext } from "../../context/OrganizationContext";
 
 const table = {
   cols: ["Name", "Email", "Role"],
@@ -20,7 +22,9 @@ const table = {
 };
 
 function Settings() {
-  const { user } = React.useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const { produceTypes } = useContext(FormatContext);
+  const { organization } = useContext(OrganizationContext);
   const [isOpen, setIsOpen] = useState({
     tab1: true,
     tab2: true,
@@ -32,24 +36,24 @@ function Settings() {
   const toggleDeleteUser = () => setDeleteUser((v) => !v);
   const [deleteCompany, setDeleteCompany] = useState(false);
   const toggleDeleteCompany = () => setDeleteCompany((v) => !v);
-  // console.log(user?.organization_roles[0]?.organization)
-  const organization =
-    Object.keys(user).length > 0 && user?.organization_roles[0]?.organization;
+
   return (
     <>
       <Appbar title="Settings" />
       <div className="mb-20">
         <div className="mb-10">
-          <div className="flex gap-3">
+          <div
+            className="flex gap-3 hover:cursor-pointer"
+            onClick={() => setIsOpen({ ...isOpen, tab1: !isOpen?.tab1 })}
+          >
             <img
-              className={`w-6 h-6 hover:cursor-pointer transition-250ms-all  ${
+              className={`w-6 h-6  transition-250ms-all  ${
                 isOpen?.tab1 ? "" : "rotate-180"
               }`}
               src={na}
               alt=""
-              onClick={() => setIsOpen({ ...isOpen, tab1: !isOpen?.tab1 })}
             />
-            <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow">
+            <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow hover:cursor-pointer transition-250ms-all">
               Personal
             </h5>
           </div>
@@ -72,16 +76,18 @@ function Settings() {
           </div>
         </div>
         <div className="mb-10">
-          <div className="flex gap-3">
+          <div
+            className="flex gap-3 hover:cursor-pointer"
+            onClick={() => setIsOpen({ ...isOpen, tab2: !isOpen?.tab2 })}
+          >
             <img
-              className={`w-6 h-6 hover:cursor-pointer  transition-250ms-all ${
+              className={`w-6 h-6   transition-250ms-all ${
                 isOpen?.tab2 ? "" : "rotate-180"
               }`}
               src={na}
               alt=""
-              onClick={() => setIsOpen({ ...isOpen, tab2: !isOpen?.tab2 })}
             />
-            <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow">
+            <h5 className="font-semibold text-dark text-h2 pb-1  border-b border-neutral-400 flex-grow">
               Company
             </h5>
           </div>
@@ -100,14 +106,16 @@ function Settings() {
           </div>
         </div>
         <div className="mb-10">
-          <div className="flex gap-3">
+          <div
+            className="flex gap-3 hover:cursor-pointer"
+            onClick={() => setIsOpen({ ...isOpen, tab3: !isOpen?.tab3 })}
+          >
             <img
-              className={`w-6 h-6 hover:cursor-pointer transition-250ms-all  ${
+              className={`w-6 h-6  transition-250ms-all  ${
                 isOpen?.tab3 ? "" : "rotate-180"
               }`}
               src={na}
               alt=""
-              onClick={() => setIsOpen({ ...isOpen, tab3: !isOpen?.tab3 })}
             />
             <h5 className="font-semibold text-dark text-h2 pb-1 border-b border-neutral-400 flex-grow">
               Products
@@ -115,37 +123,43 @@ function Settings() {
           </div>
           <div className={`ml-20 ${isOpen?.tab3 ? "block" : "hidden"}`}>
             <ul className="list-none mt-6">
-              {[
-                "Avocado Shelf-life Greencell",
-                "Avocado Shelf-life Mission",
-                "Grapes QA Flag",
-                "Grapes Waste %",
-                "Pepper Shelf-life Israel",
-              ].map((_, i) => (
-                <li
-                  className="text-neutral-900 my-4 text-md tracking-[0.3px]"
-                  key={i}
-                >
-                  {_}
-                </li>
-              ))}
+              {produceTypes?.map((pTypes) =>
+                organization?.ml_models?.map((mlModel) =>
+                  pTypes?.value == mlModel?.produce_type_id ? (
+                    <li
+                      className="text-neutral-900 my-4 text-md tracking-[0.3px]"
+                      key={pTypes?.value}
+                    >
+                      {`${pTypes?.name} ${
+                        mlModel?.file_name?.substring(
+                          0,
+                          mlModel?.file_name?.lastIndexOf(".")
+                        ) || mlModel?.file_name
+                      } `}
+                    </li>
+                  ) : null
+                )
+              )}
             </ul>
           </div>
         </div>
       </div>
 
       <div className="mb-10">
-        <div className="mb-4 flex gap-3 ">
+        <div className="mb-4 flex gap-3">
           <img
-            className={`w-6 h-6 hover:cursor-pointer transition-250ms-all ${
+            className={`w-6 h-6 hover:cursor-pointer  transition-250ms-all ${
               isOpen?.tab4 ? "" : "rotate-180"
             }`}
             src={na}
-            alt=""
             onClick={() => setIsOpen({ ...isOpen, tab4: !isOpen?.tab4 })}
+            alt=""
           />
-          <div className="pb-2 flex justify-between flex-grow border-b border-neutral-400">
-            <h5 className="font-semibold text-dark text-h2 flex-grow">
+          <div className="pb-2 flex justify-between flex-grow border-b border-neutral-400 ">
+            <h5
+              className="font-semibold text-dark text-h2 flex-grow hover:cursor-pointer"
+              onClick={() => setIsOpen({ ...isOpen, tab4: !isOpen?.tab4 })}
+            >
               Personal
             </h5>
             <div className="flex gap-4 items-center">
@@ -174,9 +188,12 @@ function Settings() {
       </div>
 
       <div className="mb-10">
-        <div className="flex gap-3">
+        <div
+          className="flex gap-3 hover:cursor-pointer"
+          onClick={() => setIsOpen({ ...isOpen, tab5: !isOpen?.tab5 })}
+        >
           <img
-            className={`w-6 h-6 transition-250ms-all hover:cursor-pointer  ${
+            className={`w-6 h-6 transition-250ms-all   ${
               isOpen?.tab5 ? "" : "rotate-180"
             }`}
             src={na}
