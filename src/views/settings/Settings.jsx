@@ -160,7 +160,7 @@ function Settings() {
               className="font-semibold text-dark text-h2 flex-grow hover:cursor-pointer"
               onClick={() => setIsOpen({ ...isOpen, tab4: !isOpen?.tab4 })}
             >
-              Personal
+              Team
             </h5>
             <div className="flex gap-4 items-center">
               <button type="button" className="flex gap-1.5 items-center">
