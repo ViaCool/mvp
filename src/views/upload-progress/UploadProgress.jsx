@@ -1,15 +1,16 @@
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 // import Button from '../../components/common/Button';
 // import FileUplaod from '../../components/common/FileUplaod';
-import Modal from '../../components/common/Modal';
-import SelectField from '../../components/common/SelectField';
-import Appbar from '../../components/layout/Appbar';
-import Progress from './Progress';
+import Modal from "../../components/common/Modal";
+import SelectField from "../../components/common/SelectField";
+import Appbar from "../../components/layout/Appbar";
+import { OrganizationContext } from "../../context/OrganizationContext";
+import Progress from "./Progress";
 
-function Predict() {
+function UploadProgress() {
   const [open, setOpen] = useState(true);
-
+  const { FileReports } = React.useContext(OrganizationContext);
   return (
     <>
       <div className="px-2 mb-6">
@@ -29,15 +30,21 @@ function Predict() {
         </button>
       </div>
       <div>
-        <Modal open={open} title="Uploading 4 Filles" close={() => setOpen(false)}>
-          <ul className="list-none flex flex-col gap-5 mb-14">
-            <Progress parcent={100} />
-            <Progress parcent={75} />
-            <Progress error="Missing field grape_variety" parcent={25} />
-            <Progress parcent={0} />
-          </ul>
+        <Modal
+          open={open}
+          title="Uploading 4 Filles"
+          close={() => setOpen(false)}
+        >
+          {FileReports?.map(({ name, status, detail }, i) => (
+            <ul className="list-none flex flex-col gap-5 mb-14" key={i}>
+              <Progress filename={name} status={status} error={detail} />
+            </ul>
+          ))}
           <div className="flex justify-end mr-12">
-            <button type="button" className="uppercase text-primary-blue text-md tracking-[0.2px]">
+            <button
+              type="button"
+              className="uppercase text-primary-blue text-md tracking-[0.2px]"
+            >
               ERROR LOG FILE
             </button>
           </div>
@@ -47,4 +54,4 @@ function Predict() {
   );
 }
 
-export default Predict;
+export default UploadProgress;

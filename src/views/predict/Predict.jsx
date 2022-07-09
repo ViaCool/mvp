@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import Button from "../../components/common/Button";
 import FileUplaod from "../../components/common/FileUplaod";
 import SelectField from "../../components/common/SelectField";
@@ -8,7 +8,8 @@ import { FormatContext } from "../../context/FormatContext";
 import deBlack from "../../images/delete_black_24dp (1) 3.svg";
 import gr from "../../images/Group 1191.svg";
 import { formatsApi } from "../../apiServices/formatsApi";
-
+import { OrganizationContext } from "../../context/OrganizationContext";
+import { useNavigate } from "react-router-dom";
 const TableAction = () => (
   <div className="flex gap-3 items-center">
     <button
@@ -100,25 +101,37 @@ function Predict() {
     setProduceTypes,
     produceTypes,
     selectedProduceTypeId,
-  } = React.useContext(FormatContext);
+  } = useContext(FormatContext);
+  const { organization } = useContext(OrganizationContext);
   const InitData = async () => {
     const res = await formatsApi();
     if (!res?.error) {
       setFormatData(res?.data);
+      const uniqueIds = [
+        ...new Set(organization?.ml_models?.map((d) => d?.produce_type_id)),
+      ];
+      const dataArray = [];
       res?.data &&
-        setProduceTypes(
-          Object?.keys(res?.data?.produce_types)?.map((d) => ({
-            value: res?.data?.produce_types[d],
-            name: d,
-          }))
+        Object?.keys(res?.data?.produce_types)?.map((d) =>
+          uniqueIds?.map(
+            (id) =>
+              id === res?.data?.produce_types[d] &&
+              dataArray?.push({
+                value: res?.data?.produce_types[d],
+                name: d,
+              })
+          )
         );
-      SetSelectedProduceType(Object.values(res?.data?.produce_types)[0]);
+      setProduceTypes(dataArray);
+      SetSelectedProduceType(dataArray[0]?.value);
+
       return;
     }
   };
   React.useEffect(() => {
     InitData();
-  }, [!format]);
+  }, [!format, organization]);
+  const navigate = useNavigate();
   return (
     <>
       <div className="px-2 mb-6">
@@ -134,27 +147,38 @@ function Predict() {
             <FileUplaod />
           </div>
           <div className="w-full max-w-[426px]">
-            <Button className="w-full" text="Predict" />
+            <Button
+              className="w-full"
+              text="Predict"
+              onClick={() => navigate("/demo-upload-progress")}
+            />
           </div>
         </div>
         <div>
           <div className="bg-neutral-375 rounded-[20px] px-4 py-7 text-md text-neutral-900 max-w-max">
             <p>Your files should include the following fields:</p>
             <br />
-            <p className="px-2">
-              id
-              <br />
-              pick_date
-              <br />
-              pick_location
-              <br />
-              grape_type
-              <br />
-              grape_variety
-              <br />
-              product_type
-              <br />
-            </p>
+            {organization?.ml_models?.map((ml_model, i) => {
+              if (
+                ml_model?.produce_type_id === selectedProduceTypeId &&
+                i === 0
+              ) {
+                return (
+                  <p className="px-2">
+                    {ml_model?.input_fields
+                      ?.toString()
+                      ?.split(",")
+                      ?.map((inputField) => (
+                        <React.Fragment>
+                          {inputField}
+                          <br />
+                        </React.Fragment>
+                      ))}
+                  </p>
+                );
+              }
+              return;
+            })}
           </div>
         </div>
       </div>

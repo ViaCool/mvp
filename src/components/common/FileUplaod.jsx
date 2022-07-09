@@ -1,10 +1,13 @@
-import React from 'react';
-import { useState } from 'react';
-import Scrollbars from 'react-custom-scrollbars-2';
-import caBlack from '../../images/cancel_black_24dp 1.svg';
-import deBlack from '../../images/description_black_24dp 1 (1).svg';
-import clBlack from '../../images/cloud_upload_black_24dp 1.svg';
-import chBlack from '../../images/chevron_right_black_24dp (2) 1.svg';
+import React, { useState, useContext } from "react";
+import Scrollbars from "react-custom-scrollbars-2";
+import caBlack from "../../images/cancel_black_24dp 1.svg";
+import deBlack from "../../images/description_black_24dp 1 (1).svg";
+import clBlack from "../../images/cloud_upload_black_24dp 1.svg";
+import chBlack from "../../images/chevron_right_black_24dp (2) 1.svg";
+import { UploadFileApi } from "../../apiServices/organizationApi";
+import { FormatContext } from "../../context/FormatContext";
+import { OrganizationContext } from "../../context/OrganizationContext";
+import { toast } from "react-toastify";
 
 const RenderFilename = ({ name }) => (
   <li className="flex gap-2 items-center">
@@ -16,23 +19,53 @@ const RenderFilename = ({ name }) => (
 );
 const id = Math.random();
 function FileUplaod({ files }) {
-  const [fileNames, setFileNames] = useState(files);
+  const { organization, pushFileReport } = useContext(OrganizationContext);
+  const { selectedProduceTypeId } = useContext(FormatContext);
 
+  const [fileNames, setFileNames] = useState(files);
+  const handleUploadFile = async (e) => {
+    e.preventDefault();
+
+    const res = await UploadFileApi(
+      organization?.id,
+      selectedProduceTypeId,
+      e.target.files[0]
+    );
+    console.log(res);
+    if (!res?.error) {
+      pushFileReport(...res?.data?.files);
+      toast.success("File has been uploaded succesfully", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+    toast.error(`Error Found: ${JSON.stringify(res?.error?.message)}`, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
   return (
     <div>
       <label
-        htmlFor={fileNames?.length > 0 ? '' : id}
+        htmlFor={fileNames?.length > 0 ? "" : id}
         className="border-neutral-400 border-dashed bg-white rounded-[20px] p-10 pb-16 w-[426px] min-h-[345px] flex items-center justify-center text-center cursor-pointer relative"
       >
         <div className="flex flex-col items-center">
           <div className="relative inline-block">
             <img
               className="w-20 h-20 block mb-6 mx-auto"
-              src={
-                fileNames?.length > 0
-                  ? deBlack
-                  : clBlack
-              }
+              src={fileNames?.length > 0 ? deBlack : clBlack}
               alt=""
             />
             {fileNames?.length > 0 && (
@@ -51,7 +84,8 @@ function FileUplaod({ files }) {
             </Scrollbars>
           ) : (
             <p className="font-semibold text-h3 text-neutral-900">
-              Drag &amp; Drop Files Here <br /> or Click to Select <br /> File CSV
+              Drag &amp; Drop Files Here <br /> or Click to Select <br /> File
+              CSV
             </p>
           )}
         </div>
@@ -61,14 +95,25 @@ function FileUplaod({ files }) {
             className="absolute bottom-5 flex items-center"
             onClick={() => setFileNames([])}
           >
-            <span className="font-semibold text-md tracking-[1%] text-primary-blue">Clear all</span>
+            <span className="font-semibold text-md tracking-[1%] text-primary-blue">
+              Clear all
+            </span>
             <img className="w-6 h-6" src={chBlack} alt="" />
           </button>
         ) : (
           <></>
         )}
       </label>
-      {fileNames?.length > 0 ? <></> : <input id={id} type="file" className="hidden" />}
+      {fileNames?.length > 0 ? (
+        <></>
+      ) : (
+        <input
+          id={id}
+          type="file"
+          className="hidden"
+          onChange={handleUploadFile}
+        />
+      )}
     </div>
   );
 }
