@@ -20,13 +20,13 @@ function Progress({ filename, status, error }) {
           <hr
             style={{ width: `${100}%` }}
             className={`${
-              error ? "bg-accent-darkred" : "bg-primary-green"
+              status >= 400 ? "bg-accent-darkred" : "bg-primary-green"
             } h-1 w-full border-0`}
           />
         </div>
       </div>
       {status === 200 && <img className="w-6 h-6" src={doBlack} alt="" />}
-      {status>=400 && <img className="w-6 h-6" src={hiOff2} alt="" />}
+      {status >= 400 && <img className="w-6 h-6" src={hiOff2} alt="" />}
     </li>
   );
 }

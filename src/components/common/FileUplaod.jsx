@@ -4,10 +4,8 @@ import caBlack from "../../images/cancel_black_24dp 1.svg";
 import deBlack from "../../images/description_black_24dp 1 (1).svg";
 import clBlack from "../../images/cloud_upload_black_24dp 1.svg";
 import chBlack from "../../images/chevron_right_black_24dp (2) 1.svg";
-import { UploadFileApi } from "../../apiServices/organizationApi";
-import { FormatContext } from "../../context/FormatContext";
 import { OrganizationContext } from "../../context/OrganizationContext";
-import { toast } from "react-toastify";
+
 
 const RenderFilename = ({ name }) => (
   <li className="flex gap-2 items-center">
@@ -19,41 +17,12 @@ const RenderFilename = ({ name }) => (
 );
 const id = Math.random();
 function FileUplaod({ files }) {
-  const { organization, pushFileReport } = useContext(OrganizationContext);
-  const { selectedProduceTypeId } = useContext(FormatContext);
+  const { pushFiles } = useContext(OrganizationContext);
 
   const [fileNames, setFileNames] = useState(files);
   const handleUploadFile = async (e) => {
     e.preventDefault();
-
-    const res = await UploadFileApi(
-      organization?.id,
-      selectedProduceTypeId,
-      e.target.files[0]
-    );
-    console.log(res);
-    if (!res?.error) {
-      pushFileReport(...res?.data?.files);
-      toast.success("File has been uploaded succesfully", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
-    toast.error(`Error Found: ${JSON.stringify(res?.error?.message)}`, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    pushFiles(e.target.files[0]);
   };
   return (
     <div>

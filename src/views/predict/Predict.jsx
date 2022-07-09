@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Button from "../../components/common/Button";
 import FileUplaod from "../../components/common/FileUplaod";
 import SelectField from "../../components/common/SelectField";
@@ -10,6 +10,9 @@ import gr from "../../images/Group 1191.svg";
 import { formatsApi } from "../../apiServices/formatsApi";
 import { OrganizationContext } from "../../context/OrganizationContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { UploadFileApi } from "../../apiServices/organizationApi";
+
 const TableAction = () => (
   <div className="flex gap-3 items-center">
     <button
@@ -102,7 +105,8 @@ function Predict() {
     produceTypes,
     selectedProduceTypeId,
   } = useContext(FormatContext);
-  const { organization } = useContext(OrganizationContext);
+  const { organization, Files, pushFileReport } =
+    useContext(OrganizationContext);
   const InitData = async () => {
     const res = await formatsApi();
     if (!res?.error) {
@@ -131,7 +135,42 @@ function Predict() {
   React.useEffect(() => {
     InitData();
   }, [!format, organization]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const handlePredict = async () => {
+    setLoading(true);
+    const res = await UploadFileApi(
+      organization?.id,
+      selectedProduceTypeId,
+      Files
+    );
+    console.log(res);
+    if (!res?.error) {
+      pushFileReport(...res?.data?.files);
+      toast.success("File has been uploaded succesfully", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      navigate("/demo-upload-progress");
+      return;
+    }
+    setLoading(false);
+    toast.error(`Error Found: ${JSON.stringify(res?.error?.message)}`, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
   return (
     <>
       <div className="px-2 mb-6">
@@ -147,11 +186,19 @@ function Predict() {
             <FileUplaod />
           </div>
           <div className="w-full max-w-[426px]">
-            <Button
-              className="w-full"
-              text="Predict"
-              onClick={() => navigate("/demo-upload-progress")}
-            />
+            {loading ? (
+              <Button
+                className="w-full"
+                text="Loading ..."
+                onClick={handlePredict}
+              />
+            ) : (
+              <Button
+                className="w-full"
+                text="Predict"
+                onClick={handlePredict}
+              />
+            )}
           </div>
         </div>
         <div>
