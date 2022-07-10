@@ -28,9 +28,9 @@ function Settings() {
   const [isOpen, setIsOpen] = useState({
     tab1: true,
     tab2: true,
-    tab3: false,
-    tab4: false,
-    tab5: false,
+    tab3: true,
+    tab4: true,
+    tab5: true,
   });
   const [deleteUser, setDeleteUser] = useState(false);
   const toggleDeleteUser = () => setDeleteUser((v) => !v);
