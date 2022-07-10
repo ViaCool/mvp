@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
-// import Button from '../../components/common/Button';
-// import FileUplaod from '../../components/common/FileUplaod';
+
 import Modal from "../../components/common/Modal";
 import SelectField from "../../components/common/SelectField";
 import Appbar from "../../components/layout/Appbar";
@@ -10,7 +9,21 @@ import Progress from "./Progress";
 
 function UploadProgress() {
   const [open, setOpen] = useState(true);
-  const { FileReports } = React.useContext(OrganizationContext);
+  const { UploadResponse } = React.useContext(OrganizationContext);
+  const handleDownload = () => {
+    let Text = "";
+    UploadResponse?.files
+      ?.filter((item) => item.status >= 400)
+      ?.map((item) => (Text += `${item?.name} - ${item?.detail}\n`));
+    const element = document.createElement("a");
+    const file = new Blob([Text], {
+      type: "text/plain",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "errors-log.txt";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
   return (
     <>
       <div className="px-2 mb-6">
@@ -32,21 +45,24 @@ function UploadProgress() {
       <div>
         <Modal
           open={open}
-          title="Uploading 4 Filles"
+          title={`Uploading ${UploadResponse?.files?.length || 0} Files`}
           close={() => setOpen(false)}
         >
-          {FileReports?.map(({ name, status, detail }, i) => (
+          {UploadResponse?.files?.map(({ name, status, detail }, i) => (
             <ul className="list-none flex flex-col gap-5 mb-14" key={i}>
               <Progress filename={name} status={status} error={detail} />
             </ul>
           ))}
           <div className="flex justify-end mr-12">
-            <button
-              type="button"
-              className="uppercase text-primary-blue text-md tracking-[0.2px]"
-            >
-              ERROR LOG FILE
-            </button>
+            {UploadResponse?.files?.some((file) => file?.status >= 400) && (
+              <button
+                type="button"
+                className="uppercase text-primary-blue text-md tracking-[0.2px]"
+                onClick={handleDownload}
+              >
+                ERROR LOG FILE
+              </button>
+            )}
           </div>
         </Modal>
       </div>

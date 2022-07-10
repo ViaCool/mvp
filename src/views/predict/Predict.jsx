@@ -5,96 +5,12 @@ import SelectField from "../../components/common/SelectField";
 import Table from "../../components/common/Table";
 import Appbar from "../../components/layout/Appbar";
 import { FormatContext } from "../../context/FormatContext";
-import deBlack from "../../images/delete_black_24dp (1) 3.svg";
-import gr from "../../images/Group 1191.svg";
+
 import { formatsApi } from "../../apiServices/formatsApi";
 import { OrganizationContext } from "../../context/OrganizationContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { UploadFileApi } from "../../apiServices/organizationApi";
-
-const TableAction = () => (
-  <div className="flex gap-3 items-center">
-    <button
-      type="button"
-      className="contrast-0 hover:contrast-100 opacity-50 hover:opacity-100 duration-150"
-    >
-      <img className="w-6 h-6" src={deBlack} alt="" />
-    </button>
-    <button
-      type="button"
-      className="contrast-0 hover:contrast-100 opacity-50 hover:opacity-100 duration-150"
-    >
-      <img className="w-6 h-6" src={gr} alt="" />
-    </button>
-  </div>
-);
-
-const table = {
-  cols: ["Name", "Uploaded", "Produce", ""],
-  rows: [
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-    [
-      "grapes-1213-prediction.xlsx",
-      "30 Dec 2021, 11:12",
-      "Grapes",
-      <TableAction />,
-    ],
-  ],
-};
+import { getReports, UploadFileApi } from "../../apiServices/organizationApi";
 
 function Predict() {
   const {
@@ -105,8 +21,14 @@ function Predict() {
     produceTypes,
     selectedProduceTypeId,
   } = useContext(FormatContext);
-  const { organization, Files, pushFileReport } =
-    useContext(OrganizationContext);
+  const {
+    organization,
+    Files,
+    setReport,
+    reports,
+    setFilesResponse,
+    clearFiles,
+  } = useContext(OrganizationContext);
   const InitData = async () => {
     const res = await formatsApi();
     if (!res?.error) {
@@ -128,8 +50,12 @@ function Predict() {
         );
       setProduceTypes(dataArray);
       SetSelectedProduceType(dataArray[0]?.value);
-
-      return;
+    }
+    if (organization?.id) {
+      const reports = await getReports(organization?.id);
+      if (!reports?.error) {
+        setReport(reports);
+      }
     }
   };
   React.useEffect(() => {
@@ -138,24 +64,30 @@ function Predict() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handlePredict = async () => {
+    if (Files?.length === 0) {
+      toast.error(
+        `Files are empty, Please choose files first`,
+        {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      return;
+    }
     setLoading(true);
     const res = await UploadFileApi(
       organization?.id,
       selectedProduceTypeId,
       Files
     );
-    console.log(res);
     if (!res?.error) {
-      pushFileReport(...res?.data?.files);
-      toast.success("File has been uploaded succesfully", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      setFilesResponse(res?.data);
+      setLoading(false);
       navigate("/demo-upload-progress");
       return;
     }
@@ -231,7 +163,7 @@ function Predict() {
       </div>
       <div>
         <h4 className="font-semibold text-h2 text-dark mb-4">Files</h4>
-        <Table datam={table} />
+        <Table cols={["Name", "Uploaded", "Produce", ""]} rows={reports} />
       </div>
     </>
   );

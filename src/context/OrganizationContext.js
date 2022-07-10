@@ -5,17 +5,27 @@ export const OrganizationContext = createContext()
 const OrganizationContextProvider = ({ children }) => {
   const [Data, setData] = useState({})
   const [Files, setFiles] = useState([])
-  const [FileReports, setFileReports] = useState([])
-  const pushFileReport = fileReport =>
-    setFileReports([...FileReports, fileReport])
+  const [reports, setReports] = useState([])
+  const [UploadResponse, setUploadResponse] = useState([])
+  const setFilesResponse = fileRes => setUploadResponse(fileRes)
   const SetData = data => setData(data)
+  const setReport = report => setReports(report)
+  const delReport = reportID =>
+    setReports(reports.filter(r => r.id !== reportID))
   const pushFiles = file => setFiles([...Files, file])
+  const clearFiles = () => setFiles([])
+  const removeFile = id => setFiles(Files?.filter(file => file.id !== id))
   const value = {
     organization: Data,
-    FileReports,
+    UploadResponse,
     Files,
+    reports,
+    clearFiles,
     pushFiles,
-    pushFileReport,
+    setReport,
+    delReport,
+    removeFile,
+    setFilesResponse,
     setOrganizationData: SetData
   }
   return (

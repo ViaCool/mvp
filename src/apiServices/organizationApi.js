@@ -5,7 +5,8 @@ import axiosInstance from './axiosInstance'
 export const UploadFileApi = async (organizationID, produceId, files) => {
   try {
     const formData = new FormData()
-    formData.append('files', files[files?.length-1])
+    files?.map(file => formData.append('files', file?.file))
+
     const { data } = await axios.post(
       `${API_URL}/${ORGANIZATIONS}/${organizationID}/files?produce_type_id=${produceId}&file_type_id=3`,
       formData,
