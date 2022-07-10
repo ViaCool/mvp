@@ -48,7 +48,7 @@ function Settings() {
           >
             <img
               className={`w-6 h-6  transition-250ms-all  ${
-                isOpen?.tab1 ? "" : "rotate-180"
+                isOpen?.tab1 ? "rotate-180" : ""
               }`}
               src={na}
               alt=""
@@ -82,7 +82,7 @@ function Settings() {
           >
             <img
               className={`w-6 h-6   transition-250ms-all ${
-                isOpen?.tab2 ? "" : "rotate-180"
+                isOpen?.tab2 ? "rotate-180" : ""
               }`}
               src={na}
               alt=""
@@ -112,7 +112,7 @@ function Settings() {
           >
             <img
               className={`w-6 h-6  transition-250ms-all  ${
-                isOpen?.tab3 ? "" : "rotate-180"
+                isOpen?.tab3 ? "rotate-180" : ""
               }`}
               src={na}
               alt=""
@@ -124,11 +124,11 @@ function Settings() {
           <div className={`ml-20 ${isOpen?.tab3 ? "block" : "hidden"}`}>
             <ul className="list-none mt-6">
               {produceTypes?.map((pTypes) =>
-                organization?.ml_models?.map((mlModel) =>
+                organization?.ml_models?.map((mlModel, index) =>
                   pTypes?.value === mlModel?.produce_type_id ? (
                     <li
                       className="text-neutral-900 my-4 text-md tracking-[0.3px]"
-                      key={pTypes?.value}
+                      key={index}
                     >
                       {`${pTypes?.name} ${
                         mlModel?.file_name?.substring(
@@ -149,7 +149,7 @@ function Settings() {
         <div className="mb-4 flex gap-3">
           <img
             className={`w-6 h-6 hover:cursor-pointer  transition-250ms-all ${
-              isOpen?.tab4 ? "" : "rotate-180"
+              isOpen?.tab4 ? "rotate-180" : ""
             }`}
             src={na}
             onClick={() => setIsOpen({ ...isOpen, tab4: !isOpen?.tab4 })}
@@ -194,7 +194,7 @@ function Settings() {
         >
           <img
             className={`w-6 h-6 transition-250ms-all   ${
-              isOpen?.tab5 ? "" : "rotate-180"
+              isOpen?.tab5 ? "rotate-180" : ""
             }`}
             src={na}
             alt=""

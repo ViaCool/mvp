@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import deBlack from "../../images/data_exploration_black_24dp 1.svg";
 import seBlack from "../../images/settings_black_24dp 1.svg";
 import logo from "../../images/logo.svg";
+import { OrganizationContext } from "../../context/OrganizationContext";
 
 const pages = [
   {
@@ -33,7 +34,10 @@ const pages = [
 
 function Aside() {
   const location = useLocation();
-  const navigate=useNavigate()
+  const { clearFiles, setReport, setFilesResponse } =
+    useContext(OrganizationContext);
+
+  const navigate = useNavigate();
   return (
     <aside className="bg-white w-[220px] h-screen fixed left-0 top-0 bottom-0">
       <div className="p-6">
@@ -65,8 +69,11 @@ function Aside() {
         <li
           className="px-9 py-3 block hover:no-underline hover:bg-gressgreen duration-200"
           onClick={() => {
-            localStorage.clear()
-            navigate("/login")
+            localStorage.clear();
+            setFilesResponse([]);
+            clearFiles();
+            setReport([]);
+            navigate("/login");
           }}
         >
           <span
