@@ -143,12 +143,12 @@ function Predict() {
                 i === 0
               ) {
                 return (
-                  <p className="px-2">
+                  <p className="px-2" key={i}>
                     {ml_model?.input_fields
                       ?.toString()
                       ?.split(",")
-                      ?.map((inputField) => (
-                        <React.Fragment>
+                      ?.map((inputField,index) => (
+                        <React.Fragment key={index}>
                           {inputField}
                           <br />
                         </React.Fragment>

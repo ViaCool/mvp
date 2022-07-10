@@ -37,7 +37,7 @@ const TableAction = ({ id, url, organizationId }) => {
       .delete(`organizations/${organizationId}/reports/${id}`)
       .then(() => {
         delReport(id);
-        toast.success(`Succeflully Deleted`, {
+        toast.success(`Succefully Deleted`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -124,7 +124,7 @@ function Table({ cols, rows, selectable }) {
                   >
                     {rowArray?.map((val, index) => {
                       return (
-                        <Fragment>
+                        <Fragment key={index}>
                           <td className="py-6 px-10">
                             <div className="flex gap-5 items-center">
                               {index === 0 && selectable && (
