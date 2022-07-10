@@ -18,18 +18,7 @@ const pages = [
     name: "Settings",
     url: "/settings",
   },
-  {
-    id: 6776,
-    icon: deBlack,
-    name: "Demo File Uploaded",
-    url: "/demo-uploaded",
-  },
-  {
-    id: 12334,
-    icon: deBlack,
-    name: "Demo Upload Progress",
-    url: "/demo-upload-progress",
-  },
+
 ];
 
 function Aside() {

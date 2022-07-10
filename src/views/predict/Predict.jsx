@@ -21,62 +21,56 @@ function Predict() {
     produceTypes,
     selectedProduceTypeId,
   } = useContext(FormatContext);
-  const {
-    organization,
-    Files,
-    setReport,
-    reports,
-    setFilesResponse,
-    clearFiles,
-  } = useContext(OrganizationContext);
-  const InitData = async () => {
-    const res = await formatsApi();
-    if (!res?.error) {
-      setFormatData(res?.data);
-      const uniqueIds = [
-        ...new Set(organization?.ml_models?.map((d) => d?.produce_type_id)),
-      ];
-      const dataArray = [];
-      res?.data &&
-        Object?.keys(res?.data?.produce_types)?.map((d) =>
-          uniqueIds?.map(
-            (id) =>
-              id === res?.data?.produce_types[d] &&
-              dataArray?.push({
-                value: res?.data?.produce_types[d],
-                name: d,
-              })
-          )
-        );
-      setProduceTypes(dataArray);
-      SetSelectedProduceType(dataArray[0]?.value);
-    }
-    if (organization?.id) {
-      const reports = await getReports(organization?.id);
-      if (!reports?.error) {
-        setReport(reports);
-      }
-    }
-  };
+  const { organization, Files, setReport, reports, setFilesResponse } =
+    useContext(OrganizationContext);
+
   React.useEffect(() => {
+    const InitData = async () => {
+      const res = await formatsApi();
+      if (!res?.error) {
+        setFormatData(res?.data);
+        const uniqueIds = [
+          ...new Set(organization?.ml_models?.map((d) => d?.produce_type_id)),
+        ];
+        const dataArray = [];
+        res?.data &&
+          Object?.keys(res?.data?.produce_types)?.map((d) =>
+            uniqueIds?.map(
+              (id) =>
+                id === res?.data?.produce_types[d] &&
+                dataArray?.push({
+                  value: res?.data?.produce_types[d],
+                  name: d,
+                })
+            )
+          );
+        setProduceTypes(dataArray);
+        SetSelectedProduceType(dataArray[0]?.value);
+      }
+      if (organization?.id) {
+        const reports = await getReports(organization?.id);
+        if (!reports?.error) {
+          setReport(reports);
+        }
+      }
+    };
+
     InitData();
-  }, [!format, organization]);
+  }, [!format, organization]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handlePredict = async () => {
     if (Files?.length === 0) {
-      toast.error(
-        `Files are empty, Please choose files first`,
-        {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
+      toast.error(`Files are empty, Please choose files first`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       return;
     }
     setLoading(true);
@@ -115,7 +109,7 @@ function Predict() {
       <div className="flex mb-16 gap-16">
         <div className="flex gap-8 flex-col">
           <div>
-            <FileUplaod />
+            <FileUplaod preview={true} />
           </div>
           <div className="w-full max-w-[426px]">
             {loading ? (
@@ -138,25 +132,22 @@ function Predict() {
             <p>Your files should include the following fields:</p>
             <br />
             {organization?.ml_models?.map((ml_model, i) => {
-              if (
+              return (
                 ml_model?.produce_type_id === selectedProduceTypeId &&
-                i === 0
-              ) {
-                return (
+                i === 0 && (
                   <p className="px-2" key={i}>
                     {ml_model?.input_fields
                       ?.toString()
                       ?.split(",")
-                      ?.map((inputField,index) => (
+                      ?.map((inputField, index) => (
                         <React.Fragment key={index}>
                           {inputField}
                           <br />
                         </React.Fragment>
                       ))}
                   </p>
-                );
-              }
-              return;
+                )
+              );
             })}
           </div>
         </div>
