@@ -37,6 +37,15 @@ const TableAction = ({ id, url, organizationId }) => {
       .delete(`organizations/${organizationId}/reports/${id}`)
       .then(() => {
         delReport(id);
+        toast.success(`Succeflully Deleted`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       })
       .catch((err) => {
         toast.error(`Error : ${err?.response?.data?.message}, Please Retry`, {
