@@ -12,7 +12,9 @@ const OrganizationContextProvider = ({ children }) => {
   const setReport = report => setReports(report)
   const delReport = reportID =>
     setReports(reports.filter(r => r.id !== reportID))
-  const pushFiles = file => setFiles([...Files, file])
+  const pushFiles = file => {
+    setFiles(prevFiles => [...prevFiles, file])
+  }
   const clearFiles = () => setFiles([])
   const removeFile = id => setFiles(Files?.filter(file => file.id !== id))
   const value = {

@@ -8,19 +8,17 @@ import { OrganizationContext } from "../../context/OrganizationContext";
 function Layout() {
   const { user, setUser } = useContext(UserContext);
   const { setOrganizationData } = useContext(OrganizationContext);
-
-  const InitUserData = async () => {
-    const res = await userApi();
-    if (!res?.error) {
-      setUser(res?.data);
-      setOrganizationData(res?.data?.organization_roles[0]?.organization);
-      return;
-    }
-  };
-
   React.useEffect(() => {
+    const InitUserData = async () => {
+      const res = await userApi();
+      if (!res?.error) {
+        setUser(res?.data);
+        setOrganizationData(res?.data?.organization_roles[0]?.organization);
+        return;
+      }
+    };
     InitUserData();
-  }, [!user]);
+  }, [!user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>

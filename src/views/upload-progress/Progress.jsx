@@ -1,6 +1,5 @@
 import React from "react";
 import doBlack from "../../images/done_black_24dp (1) 1.svg";
-import hiOff1 from "../../images/highlight_off_black_24dp 1.svg";
 import hiOff2 from "../../images/highlight_off_black_24dp 2.svg";
 
 function Progress({ filename, status, error }) {
