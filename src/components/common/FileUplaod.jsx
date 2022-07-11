@@ -33,7 +33,7 @@ function FileUplaod({ preview = false }) {
   const { getRootProps } = useDropzone({
     accept: "*",
     onDrop: (acceptedFiles) =>
-      acceptedFiles.map((file) => pushFiles({ file: file, id: uuidv4() })),
+      acceptedFiles?.map((file) => pushFiles({ file: file, id: uuidv4() })),
   });
 
   const handleClearAll = () => {

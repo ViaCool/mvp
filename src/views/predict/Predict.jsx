@@ -8,11 +8,27 @@ import { FormatContext } from "../../context/FormatContext";
 
 import { formatsApi } from "../../apiServices/formatsApi";
 import { OrganizationContext } from "../../context/OrganizationContext";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getReports, UploadFileApi } from "../../apiServices/organizationApi";
+import Progress from "./Progress";
+import Modal from "../../components/common/Modal";
 
 function Predict() {
+  const [open, setOpen] = useState(false);
+  const handleDownload = () => {
+    let Text = "";
+    UploadResponse?.files
+      ?.filter((item) => item.status >= 400)
+      ?.map((item) => (Text += `${item?.name} - ${item?.detail}\n`));
+    const element = document.createElement("a");
+    const file = new Blob([Text], {
+      type: "text/plain",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "errors-log.txt";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
   const {
     setFormatData,
     SetSelectedProduceType,
@@ -21,8 +37,14 @@ function Predict() {
     produceTypes,
     selectedProduceTypeId,
   } = useContext(FormatContext);
-  const { organization, Files, setReport, reports, setFilesResponse } =
-    useContext(OrganizationContext);
+  const {
+    organization,
+    Files,
+    setReport,
+    reports,
+    UploadResponse,
+    setFilesResponse,
+  } = useContext(OrganizationContext);
 
   React.useEffect(() => {
     const InitData = async () => {
@@ -59,7 +81,6 @@ function Predict() {
   }, [!format, organization]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const handlePredict = async () => {
     if (Files?.length === 0) {
       toast.error(`Files are empty, Please choose files first`, {
@@ -82,7 +103,7 @@ function Predict() {
     if (!res?.error) {
       setFilesResponse(res?.data);
       setLoading(false);
-      navigate("/demo-upload-progress");
+      setOpen(true);
       return;
     }
     setLoading(false);
@@ -151,6 +172,30 @@ function Predict() {
             })}
           </div>
         </div>
+      </div>
+      <div>
+        <Modal
+          open={open}
+          title={`Uploading ${UploadResponse?.files?.length || 0} Files`}
+          close={() => setOpen(false)}
+        >
+          {UploadResponse?.files?.map(({ name, status, detail }, i) => (
+            <ul className="list-none flex flex-col gap-5 mb-14" key={i}>
+              <Progress filename={name} status={status} error={detail} />
+            </ul>
+          ))}
+          <div className="flex justify-end mr-12">
+            {UploadResponse?.files?.some((file) => file?.status >= 400) && (
+              <button
+                type="button"
+                className="uppercase text-primary-blue text-md tracking-[0.2px]"
+                onClick={handleDownload}
+              >
+                ERROR LOG FILE
+              </button>
+            )}
+          </div>
+        </Modal>
       </div>
       <div>
         <h4 className="font-semibold text-h2 text-dark mb-4">Files</h4>

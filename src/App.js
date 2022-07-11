@@ -14,8 +14,6 @@ import {
 import Predict from './views/predict/Predict'
 import Layout from './components/layout/Layout'
 import Settings from './views/settings/Settings'
-import DemoUploaded from './views/demo-uploaded/DemoUploaded'
-import UploadProgress from './views/upload-progress/UploadProgress'
 
 function App () {
   const ProtectedRoute = ({ children }) => {
@@ -43,8 +41,6 @@ function App () {
         >
           <Route path='predict' element={<Predict />} />
           <Route path='settings' element={<Settings />} />
-          <Route path='demo-uploaded' element={<DemoUploaded />} />
-          <Route path='demo-upload-progress' element={<UploadProgress />} />
         </Route>
       </Routes>
       <ToastContainer />
