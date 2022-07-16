@@ -22,13 +22,12 @@ a {
 }
 .dropzone {
   text-align: center;
-  width: 330px;
+  width: 380px;
   height: 330px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   padding:20px;
-  border: 2px gray dashed;
   margin: auto;
 }

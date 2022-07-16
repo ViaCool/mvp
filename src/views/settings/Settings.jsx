@@ -130,12 +130,15 @@ function Settings() {
                       className="text-neutral-900 my-4 text-md tracking-[0.3px]"
                       key={index}
                     >
-                      {`${pTypes?.name} ${
+                      {`${
+                        pTypes?.name.toLowerCase().charAt(0).toUpperCase()+
+                        (pTypes?.name.slice(1).toLowerCase())
+                      } ${
                         mlModel?.file_name?.substring(
-                          0,
+                          mlModel?.file_name?.indexOf("-") + 1 || 0,
                           mlModel?.file_name?.lastIndexOf(".")
                         ) || mlModel?.file_name
-                      } `}
+                      }`}
                     </li>
                   ) : null
                 )
