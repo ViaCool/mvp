@@ -48,7 +48,7 @@ const TableAction = ({ id, url, organizationId }) => {
         });
       })
       .catch((err) => {
-        toast.error(`Error : ${err?.response?.data?.message}, Please Retry`, {
+        toast.error(`Error : ${err?.response?.data?.detail}, Please Retry`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,

@@ -76,15 +76,18 @@ function Predict() {
       return;
     }
     setLoading(false);
-    toast.error(`Error Found: ${JSON.stringify(res?.error?.message)}`, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    toast.error(
+      `Error Found: ${JSON.stringify(res?.error?.response?.data?.detail)}`,
+      {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }
+    );
   };
 
   return (

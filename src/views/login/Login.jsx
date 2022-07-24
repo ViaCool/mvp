@@ -37,7 +37,7 @@ function Login() {
     if (response?.error) {
       setAuthCredentials({ ...authCredentials, loading: false });
       console.log("err", response?.error);
-      toast.error(`Error : ${response?.error?.message}`, {
+      toast.error(`Error : ${response?.error?.response?.data?.detail}`, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
