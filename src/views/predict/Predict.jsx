@@ -1,17 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "../../components/common/Button";
 import FileUplaod from "../../components/common/FileUplaod";
 import SelectField from "../../components/common/SelectField";
 import Table from "../../components/common/Table";
 import Appbar from "../../components/layout/Appbar";
 import { FormatContext } from "../../context/FormatContext";
-
-import { formatsApi } from "../../apiServices/formatsApi";
 import { OrganizationContext } from "../../context/OrganizationContext";
 import { toast } from "react-toastify";
-import { getReports, UploadFileApi } from "../../apiServices/organizationApi";
+
 import Progress from "./Progress";
 import Modal from "../../components/common/Modal";
+import { UploadFileApi } from "../../apiServices/organizationApi";
 
 function Predict() {
   const [open, setOpen] = useState(false);
@@ -29,56 +28,26 @@ function Predict() {
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
   };
-  const {
-    setFormatData,
-    SetSelectedProduceType,
-    format,
-    setProduceTypes,
-    produceTypes,
-    selectedProduceTypeId,
-  } = useContext(FormatContext);
-  const {
-    organization,
-    Files,
-    setReport,
-    reports,
-    UploadResponse,
-    setFilesResponse,
-  } = useContext(OrganizationContext);
+  const { produceTypes, selectedProduceTypeId } = useContext(FormatContext);
+  const { organization, Files, reports, UploadResponse, setFilesResponse } =
+    useContext(OrganizationContext);
 
-  React.useEffect(() => {
-    const InitData = async () => {
-      const res = await formatsApi();
-      if (!res?.error) {
-        setFormatData(res?.data);
-        const uniqueIds = [
-          ...new Set(organization?.ml_models?.map((d) => d?.produce_type_id)),
-        ];
-        const dataArray = [];
-        res?.data &&
-          Object?.keys(res?.data?.produce_types)?.map((d) =>
-            uniqueIds?.map(
-              (id) =>
-                id === res?.data?.produce_types[d] &&
-                dataArray?.push({
-                  value: res?.data?.produce_types[d],
-                  name: d,
-                })
-            )
+  const [inputRules, setRules] = useState(null);
+  useEffect(() => {
+    const data = organization?.ml_models?.filter(
+      (item) => item?.produce_type_id === selectedProduceTypeId
+    );
+    organization?.ml_models?.filter &&
+      setRules(
+        ...data?.map((ml_model, i) => {
+          return (
+            ml_model?.produce_type_id === selectedProduceTypeId &&
+            i === 0 &&
+            ml_model?.input_fields?.toString()?.split(",")
           );
-        setProduceTypes(dataArray);
-        SetSelectedProduceType(dataArray[0]?.value);
-      }
-      if (organization?.id) {
-        const reports = await getReports(organization?.id);
-        if (!reports?.error) {
-          setReport(reports);
-        }
-      }
-    };
-
-    InitData();
-  }, [!format, organization]); // eslint-disable-line react-hooks/exhaustive-deps
+        })
+      );
+  }, [organization, selectedProduceTypeId]);
 
   const [loading, setLoading] = useState(false);
   const handlePredict = async () => {
@@ -107,15 +76,18 @@ function Predict() {
       return;
     }
     setLoading(false);
-    toast.error(`Error Found: ${JSON.stringify(res?.error?.message)}`, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    toast.error(
+      `Error Found: ${JSON.stringify(res?.error?.response?.data?.detail)}`,
+      {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }
+    );
   };
 
   return (
@@ -152,24 +124,13 @@ function Predict() {
           <div className="bg-neutral-375 rounded-[20px] px-4 py-7 text-md text-neutral-900 max-w-max">
             <p>Your files should include the following fields:</p>
             <br />
-            {organization?.ml_models?.map((ml_model, i) => {
-              return (
-                ml_model?.produce_type_id === selectedProduceTypeId &&
-                i === 0 && (
-                  <p className="px-2" key={i}>
-                    {ml_model?.input_fields
-                      ?.toString()
-                      ?.split(",")
-                      ?.map((inputField, index) => (
-                        <React.Fragment key={index}>
-                          {inputField}
-                          <br />
-                        </React.Fragment>
-                      ))}
-                  </p>
-                )
-              );
-            })}
+            <ul className="px-2">
+              {inputRules?.map((inputField, index) => (
+                <React.Fragment key={index}>
+                  <li> {inputField}</li>
+                </React.Fragment>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

@@ -48,7 +48,7 @@ const TableAction = ({ id, url, organizationId }) => {
         });
       })
       .catch((err) => {
-        toast.error(`Error : ${err?.response?.data?.message}, Please Retry`, {
+        toast.error(`Error : ${err?.response?.data?.detail}, Please Retry`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -110,13 +110,19 @@ function Table({ cols, rows, selectable }) {
           </thead>
           <tbody>
             {rows
-              ?.filter((row) => row?.is_deleted === false)
+              ?.filter(
+                (row) =>
+                  row?.is_deleted === false &&
+                  row.name?.includes(selectedProduceType?.toLowerCase())
+              )
+
               ?.map((rowData, index) => {
                 const rowArray = [
                   rowData?.name,
                   rowData?.created_at,
                   selectedProduceType,
                 ];
+
                 return (
                   <tr
                     className="hover:bg-opacity-5 duration-150 bg-white hover:bg-primary-blue"
