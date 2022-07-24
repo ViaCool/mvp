@@ -20,12 +20,11 @@ function App () {
     if (!localStorage['authToken']) {
       return <Navigate to='/login' replace />
     }
-
     return children ? children : <Outlet />
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/app2'>
       <Routes>
         <Route path='/login' element={<AuthLayout />}>
           <Route index element={<Login />} />
@@ -39,10 +38,12 @@ function App () {
             </ProtectedRoute>
           }
         >
+          <Route path='/' element={<Predict />} />
           <Route path='predict' element={<Predict />} />
           <Route path='settings' element={<Settings />} />
         </Route>
       </Routes>
+
       <ToastContainer />
     </BrowserRouter>
   )
