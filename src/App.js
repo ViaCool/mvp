@@ -25,7 +25,7 @@ function App () {
   }
 
   return (
-    <BrowserRouter basename='/app2'>
+    <BrowserRouter>
       <Routes>
         <Route path='/login' element={<AuthLayout />}>
           <Route index element={<Login />} />
