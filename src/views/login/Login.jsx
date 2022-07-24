@@ -36,7 +36,8 @@ function Login() {
     const response = await loginApi(authCredentials);
     if (response?.error) {
       setAuthCredentials({ ...authCredentials, loading: false });
-      toast.error("Incorrect email or password", {
+      console.log("err", response?.error);
+      toast.error(`Error : ${response?.error?.response?.data?.detail}`, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
